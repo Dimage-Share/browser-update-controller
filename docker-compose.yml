@@ -1,20 +1,17 @@
-version: '3.9'
 services:
-  browser-update-controller:
+  controller:
     container_name: browser-update-controller
-    build: ./src
-    restart: unless-stopped
+    build: .
     env_file: .env
     ports:
       - "6001:6001"
     volumes:
-      - data:/app/data
+      - data-vol:/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6001/health"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:6001/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 volumes:
-  data:
-    name: browser-update-controller-data
+  data-vol:
